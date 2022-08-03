@@ -1,0 +1,47 @@
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+pre {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+#proteins {
+    width: 100%;
+    max-width: 400px;
+}
+
+#output-residue-domains {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#protein-chart,
+#set-chart {
+    min-height: 600px;
+}
+
+.sequence-input {
+    max-width: 100%;
+}
+
+@media only screen and (max-width: 1024px) {
+    .tables {
+        flex-direction: column;
+    }
+    .tables > div {
+        max-width: 100%;
+    }
+}
