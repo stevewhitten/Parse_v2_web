@@ -1,3 +1,4 @@
+const window_size = 25;
 const inputSequenceEl = document.getElementById('input-sequence');
 const inputFileEl = document.getElementById('input-file');
 const inputRegionLengthEl = document.getElementById('input-region-length');
@@ -139,6 +140,14 @@ const setChartLayout = {
     },
 };
 
+function excludeWindow(index, length, window_size) {
+    if (index < window_size / 2 - 1 ||
+        index > length - window_size / 2) {
+        return true;
+    }
+    return false;
+}
+
 function resetSummary() {
     outputSequenceLengthEl.innerText = '';
     outputSumPWindowsEl.innerText = '';
@@ -183,15 +192,16 @@ function updateProteinSelect() {
 
 function selectProtein(event) {
     const selectedProtein = proteins[event.target.value];
+    const filteredResidues = selectedProtein.residues.filter(x => !excludeWindow(x.index, selectedProtein.residues.length, window_size));
 
     outputSequenceLengthEl.innerText = selectedProtein.sequence.length;
-    outputSumPWindowsEl.innerText = selectedProtein.residues
+    outputSumPWindowsEl.innerText = filteredResidues
         .map(x => {
             return x.region == 'P' ? x.dist_norm : 0
         })
         .reduce((prev, curr) => prev + curr, 0)
         .toFixed(2);
-    outputSumPWindows2El.innerText = selectedProtein.residues
+    outputSumPWindows2El.innerText = filteredResidues
         .map(x => {
             return x.region_pi_q == 'P' ? x.dist_norm_pi_q : 0
         })
@@ -325,7 +335,7 @@ function processProteinSequence(sequence, id) {
     var cutoff = parseFloat(inputCutoffEl.value);
     cutoff /= 100;
 
-    var parseResult = parse(sequence, regionLength, cutoff);
+    var parseResult = parse(sequence, window_size, regionLength, cutoff);
 
     if (parseResult.error) {
         console.log(parseResult.message);
@@ -509,7 +519,7 @@ function reset() {
     resetTables();
 
     if (location.hostname === "localhost") {
-        inputSequenceEl.value = 'MAVPAALIPPTQLVPPQPPISTSASSSGTTTSTSSATSSPAPSIGPPASSGPTLFRPEPIASAAAAAATVTSTGGGGGGGGSGGGGGSSGNGGGGGGGGGGSNCNPNLAAASNGSGGGGGGISAGGGVASSTPINASTGSSSSSSSSSSSSSSSSSSSSSSSSCGPLPGKPVYSTPSPVENTPQNNECKMVDLRGAKVASFTVEGCELICLPQAFDLFLKHLVGGLHTVYTKLKRLEITPVVCNVEQVRILRGLGAIQPGVNRCKLISRKDFETLYNDCTNASSRPGRPPKRTQSVTSPENSHIMPHSVPGLMSPGIIPPTGLTAAAAAAAAATNAAIAEAMKVKKIKLEAMSNYHASNNQHGADSENGDMNSSVGSSDGSWDKETLPSSPSQGPQASITHPRMPGARSLPLSHPLNHLQQSHLLPNGLELPFMMMPHPLIPVSLPPASVTMAMSQMNHLSTIANMAAAAQVQSPPSRVETSVIKERVPDSPSPAPSLEEGRRPGSHPSSHRSSSVSSSPARTESSSDRIPVHQNGLSMNQMLMGLSPNVLPGPKEGDLAGHDMGHESKRMHIEKDETPLSTPTARDSLDKLSLTGHGQPLPPGFPSPFLFPDGLSSIETLLTNIQGLLKVAIDNARAQEKQVQLEKTELKMDFLRERELRETLEKQLAMEQKNRAIVQKRLKKEKKAKRKLQEALEFETKRREQAEQTLKQAASTDSLRVLNDSLTPEIEADRSGGRTDAERTIQDGRLYLKTTVMY';
+        inputSequenceEl.value = 'MESNQSNNGGSGNAALNRGGRYVPPHLRGGDGGAAAAASAGGDDRRGGAGGGGYRRGGGNSGGGGGGGYDRGYNDNRDDRDNRGGSGGYGRDRNYEDRGYNGGGGGGGNRGYNNNRGGGGGGYNRQDRGDGGSSNFSRGGYNNRDEGSDNRGSGRSYNNDRRDNGGDGLEHHHHHH';
     }
 }
 

@@ -1,4 +1,3 @@
-const window_size = 25;
 const amino_acids = {
     A: { name: 'ala', ppii_h: 0.37, helix: 1.42, hydr: 0.0728, lambda_1: 0.0, lambda_2: 0.0 },
     C: { name: 'cys', ppii_h: 0.25, helix: 0.73, hydr: 0.3557, lambda_1: 0.0, lambda_2: 0.0 },
@@ -23,15 +22,16 @@ const amino_acids = {
 };
 const amino_acid_keys = Object.keys(amino_acids);
 
-function getResidues(input) {
+function getResidues(input, window_size) {
     var residues = [];
     for (let i = 0; i < input.length; i++) {
         residues.push({
+            index: i,
             amino_acid: input[i],
             region: null,
             region_pi_q: null,
-            dist_norm: null,
-            dist_norm_pi_q: null,
+            dist_norm: 0,
+            dist_norm_pi_q: 0,
         });
     }
 
@@ -255,7 +255,7 @@ function getRegions(residues, regionLength, cutoff) {
     return regions;
 }
 
-function parse(sequence, regionLength, cutoff) {
+function parse(sequence, window_size, regionLength, cutoff) {
     var result = {
         error: false,
         message: null,
@@ -283,7 +283,7 @@ function parse(sequence, regionLength, cutoff) {
         return result;
     }
 
-    var residues = getResidues(sequence);
+    var residues = getResidues(sequence, window_size);
     var regions = getRegions(residues, regionLength, cutoff);
 
     var data = {
