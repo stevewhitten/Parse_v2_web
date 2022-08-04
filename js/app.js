@@ -83,12 +83,12 @@ const residuesTable = new Tabulator('#residues-table', {
             sorter: 'number',
         },
         {
-            title: 'Residue label (w/ Uπ Uq corrections)',
+            title: 'Residue label (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
             field: 'region_pi_q',
             sorter: 'number',
         },
         {
-            title: 'Classifier Distance (w/ Uπ Uq corrections)',
+            title: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
             field: 'dist_norm_pi_q',
             sorter: 'number',
         },
@@ -118,7 +118,7 @@ const proteinChart2Layout = {
     },
     yaxis: {
         title: {
-            text: 'Classifier Distance (w/ Uπ Uq corrections)',
+            text: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
         },
     },
     shapes: [],
@@ -190,13 +190,13 @@ function selectProtein(event) {
             return x.region == 'P' ? x.dist_norm : 0
         })
         .reduce((prev, curr) => prev + curr, 0)
-        .toFixed(3);
+        .toFixed(2);
     outputSumPWindows2El.innerText = selectedProtein.residues
         .map(x => {
             return x.region_pi_q == 'P' ? x.dist_norm_pi_q : 0
         })
         .reduce((prev, curr) => prev + curr, 0)
-        .toFixed(3);
+        .toFixed(2);
 
     var regionData = [];
     selectedProtein.regions.forEach((x, index) => {
@@ -260,11 +260,11 @@ function selectProtein(event) {
     };
 
     selectedProtein.residues.forEach((x, index) => {
-        traces.P.x.push(index);
+        traces.P.x.push(index + 1);
         traces.P.y.push(x.region == 'P' ? x.dist_norm : null);
-        traces.D.x.push(index);
+        traces.D.x.push(index + 1);
         traces.D.y.push(x.region == 'D' ? x.dist_norm : null);
-        traces.F.x.push(index);
+        traces.F.x.push(index + 1);
         traces.F.y.push(x.region == 'F' ? x.dist_norm : null);
     });
 
@@ -308,11 +308,11 @@ function selectProtein(event) {
     };
 
     selectedProtein.residues.forEach((x, index) => {
-        traces2.P.x.push(index);
+        traces2.P.x.push(index + 1);
         traces2.P.y.push(x.region_pi_q == 'P' ? x.dist_norm_pi_q : null);
-        traces2.D.x.push(index);
+        traces2.D.x.push(index + 1);
         traces2.D.y.push(x.region_pi_q == 'D' ? x.dist_norm_pi_q : null);
-        traces2.F.x.push(index);
+        traces2.F.x.push(index + 1);
         traces2.F.y.push(x.region_pi_q == 'F' ? x.dist_norm_pi_q : null);
     });
 
