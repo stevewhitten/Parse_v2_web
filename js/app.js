@@ -284,11 +284,11 @@ function displayProteinReuslts() {
 
     filteredResidues.forEach((x, index) => {
         traces2.P.x.push(index + 1);
-        traces2.P.y.push(x.region == 'P' ? x.dist_norm_pi_q : null);
+        traces2.P.y.push(x.region_pi_q == 'P' ? x.dist_norm_pi_q : null);
         traces2.D.x.push(index + 1);
-        traces2.D.y.push(x.region == 'D' ? x.dist_norm_pi_q : null);
+        traces2.D.y.push(x.region_pi_q == 'D' ? x.dist_norm_pi_q : null);
         traces2.F.x.push(index + 1);
-        traces2.F.y.push(x.region == 'F' ? x.dist_norm_pi_q : null);
+        traces2.F.y.push(x.region_pi_q == 'F' ? x.dist_norm_pi_q : null);
     });
 
     const data2 = [traces2.P, traces2.D, traces2.F];
