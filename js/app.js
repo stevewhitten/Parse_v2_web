@@ -154,7 +154,7 @@ function resetTables() {
     residuesTable.setData([]);
 }
 
-function displayProteinReuslts() {
+function displayProteinResults() {
     const filteredResidues = protein.residues.filter(x => !excludeWindow(x.index, protein.residues.length, windowSize));
     const regions = protein.regions;
 
@@ -234,7 +234,7 @@ function displayProteinReuslts() {
         },
     };
 
-    filteredResidues.forEach((x, index) => {
+    protein.residues.forEach((x, index) => {
         traces.P.x.push(index + 1);
         traces.P.y.push(x.region == 'P' ? x.dist_norm : null);
         traces.D.x.push(index + 1);
@@ -282,7 +282,7 @@ function displayProteinReuslts() {
         },
     };
 
-    filteredResidues.forEach((x, index) => {
+    protein.residues.forEach((x, index) => {
         traces2.P.x.push(index + 1);
         traces2.P.y.push(x.region_pi_q == 'P' ? x.dist_norm_pi_q : null);
         traces2.D.x.push(index + 1);
@@ -404,7 +404,7 @@ function submit() {
     var sequence = inputSequenceEl.value;
 
     processProteinSequence(sequence);
-    displayProteinReuslts();
+    displayProteinResults();
 }
 function clear() {
     console.log('clear');
