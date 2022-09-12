@@ -73,17 +73,17 @@ const residuesTable = new Tabulator('#residues-table', {
             sorter: 'number',
         },
         {
-            title: 'dist_norm',
+            title: 'Classifier Distance',
             field: 'dist_norm',
             sorter: 'number',
         },
         {
-            title: 'Residue label π + q',
+            title: 'Residue label (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
             field: 'region_pi_q',
             sorter: 'number',
         },
         {
-            title: 'dist_norm_pi_q',
+            title: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
             field: 'dist_norm_pi_q',
             sorter: 'number',
         },
@@ -99,7 +99,7 @@ const proteinChartLayout = {
     },
     yaxis: {
         title: {
-            text: 'Residue-level dist_norm',
+            text: 'Classifier Distance',
         },
     },
     shapes: [],
@@ -113,7 +113,7 @@ const proteinChart2Layout = {
     },
     yaxis: {
         title: {
-            text: 'Residue-level dist_norm_π_q',
+            text: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
         },
     },
     shapes: [],
