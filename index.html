@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>ParSe v2: predict phase-separating protein regions</title>
+    <meta name="description" content="">
+
+    <link href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css" rel="stylesheet">
+    <link href="https://unpkg.com/tabulator-tables@5.1.0/dist/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/app.css">
+</head>
+
+<body>
+    <main>
+        <h1>ParSe v2: predict phase-separating protein regions from the primary sequence</h1>
+        <p>This is a form that allows you to enter a sequence and predict the regions in a protein that are disordered, and
+            which subset of those regions can undergo liquid-liquid phase separation (LLPS).</p>
+        <h3>Description</h3>
+        <p>ParSe v2 is an update to the <a href="https://stevewhitten.github.io/Parse_web/">original ParSe algorithm</a>.</p>
+        <p>ParSe v2 explores the possibility that LLPS can be predicted from sequence-based calculations of
+            hydrophobicity, α-helix propensity, and a model of the polymer scaling exponent (ν<sub><i>model</i></sub>).
+            Using these three factors, any protein sequence can be parsed into one
+            of three categories:</p>
+        <ul>
+            <li><b>P Regions (P)</b> are intrinsically disordered and prone
+                to undergo LLPS.</li>
+            <li><b>D Regions (D)</b> are intrinsically disordered but do not
+                undergo LLPS.</li>
+            <li><b>F Regions (F)</b> may or may not be intrinsically disordered,
+                but can fold to a stable conformation.</li>
+        </ul>
+        <h3>Reference</h3>
+        <ol>
+            <li>Ibrahim, A.Y., Khaodeuanepheng, N.P., Amarasekara, D.L., Correia, J.J., Lewis, K.A., Fitzkee, N.C., Hough, L.E., Whitten, S.T.
+                (2022) “Intrinsically disordered regions that drive phase separation form a robustly distinct protein class”
+                <i>bioRxiv</i> doi: <a href="https://www.biorxiv.org/content/10.1101/2022.08.04.502866v1">10.1101/2022.08.04.502866</a>.
+            </li>
+
+        </ol>
+        <div class="mb-10">
+            <h3>Primary Sequence</h3>
+            <p>Maximum sequence length that can be analyzed is 10,000 residues; minimum length is 25. Amino acids are restricted to the 20 common types.
+            </p>
+            <div class="mb-10">
+                <label for="input-sequence">Input: </label>
+                <br/>
+                <textarea id="input-sequence" cols="64" rows="10" class="sequence-input"></textarea>
+            </div>
+            <div class="mb-10">
+                <button id="submit">Submit</button>
+                <button id="clear">Clear</button>
+                <button id="reset">Reset</button>
+            </div>
+        </div>
+        <div id="protein-information">
+            <div class="mb-10">
+                <pre>Sequence length: <span id="output-sequence-length"></span>
+Σ classifier distance of P-labeled windows: <span id="output-sum-p-windows"></span>
+Σ classifier distance +Uπ+Uq of P-labeled windows: <span id="output-sum-p-windows-2"></span></pre>
+            </div>
+            <div class="mb-10">
+                <h3>ParSe Results</h3>
+                <div id="protein-bar"></div>
+                <div id="protein-chart"></div>
+                <div id="protein-pi-q-chart"></div>
+            </div>
+            <div class="mb-10">
+                <h3>Protein Regions</h3>
+                <p>Identified regions have 20 or more contiguous residues that are at least 90% of only one label: P, D, or F.
+               </p>
+                <div class="mb-10">
+                    <button id="download-regions-csv">Download CSV</button>
+                </div>
+                <div id="regions-table" class="mb-10"></div>
+            </div>
+            <div class="mb-10">
+                <h3>Residue-level Information</h3>
+                <div class="mb-10">
+                    <button id="download-residues-csv">Download CSV</button>
+                </div>
+                <div id="residues-table" class="mb-10"></div>
+            </div>
+        </div>
+    </main>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.1.0/dist/js/tabulator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.plot.ly/plotly-2.4.2.min.js"></script>
+    <script src="./js/parse.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
