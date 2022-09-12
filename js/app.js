@@ -338,7 +338,7 @@ function displayProteinReuslts() {
             type: 'bar',
             orientation: 'h',
             width: [0.3],
-            x: [regions[i].end - regions[i].start],
+            x: [regions[i].end - regions[i].start + 1],
             y: ['Region'],
             marker: {
                 color: 'transparent',
