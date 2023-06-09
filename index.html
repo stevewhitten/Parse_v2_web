@@ -17,19 +17,19 @@
     <main>
         <h1>ParSe v2: predict phase-separating protein regions from the primary sequence</h1>
         <p>This is a form that allows you to enter a sequence and predict the regions in a protein that are disordered, and
-            which subset of those regions can undergo liquid-liquid phase separation (LLPS).</p>
+            which subset of those regions can undergo phase separation.</p>
         <p>To analyze sequence sets using ParSe v2, please visit <a href="https://stevewhitten.github.io/Parse_v2_FASTA_web/">our other site</a>.</p>
         <h3>Description</h3>
         <p>ParSe v2 is an update to the <a href="https://stevewhitten.github.io/Parse_web/">original ParSe algorithm</a>.</p>
-        <p>ParSe v2 explores the possibility that LLPS can be predicted from sequence-based calculations of
+        <p>ParSe v2 explores the possibility that protein mediated phase separation can be predicted from sequence-based calculations of
             hydrophobicity, α-helix propensity, and a model of the polymer scaling exponent (ν<sub><i>model</i></sub>).
             Using these three factors, any protein sequence can be parsed into one
             of three categories:</p>
         <ul>
             <li><b>P Regions (P)</b> are intrinsically disordered and prone
-                to undergo LLPS.</li>
+                to undergo phase separation.</li>
             <li><b>D Regions (D)</b> are intrinsically disordered but do not
-                undergo LLPS.</li>
+                undergo phase separation.</li>
             <li><b>F Regions (F)</b> may or may not be intrinsically disordered,
                 but can fold to a stable conformation.</li>
         </ul>
@@ -66,13 +66,15 @@
             <div class="mb-10">
                 <pre>Sequence length: <span id="output-sequence-length"></span>
 Σ classifier distance of P-labeled windows: <span id="output-sum-p-windows"></span>
-Σ classifier distance +Uπ+Uq of P-labeled windows: <span id="output-sum-p-windows-2"></span></pre>
+Σ classifier distance +Uπ+Uq of P-labeled windows + <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> (trained using ∆<i>h</i>°): <span id="output-sum-p-windows-2"></span>
+Σ classifier distance of P-labeled windows + <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> (trained using <i>c<sub>sat</sub></i> at 4°C): <span id="output-sum-p-windows-3"></span></pre>
             </div>
             <div class="mb-10">
                 <h3>ParSe Results</h3>
                 <div id="protein-bar"></div>
                 <div id="protein-chart"></div>
                 <div id="protein-pi-q-chart"></div>
+                <div id="protein-pi-q-csat-chart"></div>
             </div>
             <div class="mb-10">
                 <h3>Protein Regions</h3>
