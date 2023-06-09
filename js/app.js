@@ -14,10 +14,12 @@ const downloadResiduesEl = document.getElementById('download-residues-csv');
 const outputSequenceLengthEl = document.getElementById('output-sequence-length');
 const outputSumPWindowsEl = document.getElementById('output-sum-p-windows');
 const outputSumPWindows2El = document.getElementById('output-sum-p-windows-2');
+const outputSumPWindows3El = document.getElementById('output-sum-p-windows-3');
 
 const proteinChartEl = document.getElementById('protein-chart');
 const proteinChart2El = document.getElementById('protein-pi-q-chart');
 const proteinChart3El = document.getElementById('protein-bar');
+const proteinChart4El = document.getElementById('protein-pi-q-csat-chart');
 
 var protein = null;
 
@@ -79,13 +81,23 @@ const residuesTable = new Tabulator('#residues-table', {
             sorter: 'number',
         },
         {
-            title: 'Residue label (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
+            title: 'Residue label (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (∆<i>h</i>° trained))',
             field: 'region_pi_q',
             sorter: 'number',
         },
         {
-            title: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
+            title: 'Classifier Distance (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (∆<i>h</i>° trained))',
             field: 'dist_norm_pi_q',
+            sorter: 'number',
+        },
+        {
+            title: 'Residue label (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (<i>c<sub>sat</sub></i> trained))',
+            field: 'region_pi_q_csat',
+            sorter: 'number',
+        },
+        {
+            title: 'Classifier Distance (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (<i>c<sub>sat</sub></i> trained))',
+            field: 'dist_norm_pi_q_csat',
             sorter: 'number',
         },
     ],
@@ -114,7 +126,7 @@ const proteinChart2Layout = {
     },
     yaxis: {
         title: {
-            text: 'Classifier Distance (w/ <i>U<sub>π</sub></i> <i>U<sub>q</sub></i> corrections)',
+            text: 'Classifier Distance (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (∆<i>h</i>° trained))',
         },
     },
     shapes: [],
@@ -131,6 +143,20 @@ const proteinChart3Layout = {
         visible: false,
     },
 };
+const proteinChart4Layout = {
+    showlegend: true,
+    xaxis: {
+        title: {
+            text: 'Residue Number',
+        },
+    },
+    yaxis: {
+        title: {
+            text: 'Classifier Distance (w/ <i>U<sub>π</sub></i> + <i>U<sub>q</sub></i> extension (<i>c<sub>sat</sub></i> trained))',
+        },
+    },
+    shapes: [],
+};
 
 function excludeWindow(index, length, windowSize) {
     if (index < windowSize / 2 - 1 ||
@@ -144,11 +170,13 @@ function resetSummary() {
     outputSequenceLengthEl.innerText = '';
     outputSumPWindowsEl.innerText = '';
     outputSumPWindows2El.innerText = '';
+    outputSumPWindows3El.innerText = '';
 }
 function resetPlots() {
     Plotly.newPlot(proteinChartEl, [], proteinChartLayout);
     Plotly.newPlot(proteinChart2El, [], proteinChart2Layout);
     Plotly.newPlot(proteinChart3El, [], proteinChart3Layout);
+    Plotly.newPlot(proteinChart4El, [], proteinChart4Layout);
 }
 function resetTables() {
     regionsTable.setData([]);
@@ -166,14 +194,20 @@ function displayProteinResults() {
             return x.region == 'P' ? x.dist_norm : 0
         })
         .reduce((prev, curr) => prev + curr, 0)
-        .toFixed(3);
+        .toFixed(1);
     outputSumPWindows2El.innerText = filteredResidues
         .map(x => {
             return x.region_pi_q == 'P' ? x.dist_norm_pi_q : 0
         })
         .reduce((prev, curr) => prev + curr, 0)
-        .toFixed(3);
-
+        .toFixed(1);
+    outputSumPWindows3El.innerText = filteredResidues
+        .map(x => {
+            return x.region_pi_q_csat == 'P' ? x.dist_norm_pi_q_csat : 0
+        })
+        .reduce((prev, curr) => prev + curr, 0)
+        .toFixed(1);
+    
     var regionData = [];
     protein.regions.forEach((x, index) => {
         regionData.push({
@@ -196,6 +230,8 @@ function displayProteinResults() {
             dist_norm: x.dist_norm.toFixed(3),
             region_pi_q: x.region_pi_q,
             dist_norm_pi_q: x.dist_norm_pi_q.toFixed(3),
+            region_pi_q_csat: x.region_pi_q_csat,
+            dist_norm_pi_q_csat: x.dist_norm_pi_q_csat.toFixed(3),
         });
     });
     residuesTable.setData(residueData);
@@ -301,13 +337,67 @@ function displayProteinResults() {
 
     const config2 = {
         toImageButtonOptions: {
-            filename: `${downloadName}_classifier_distance_with_corrections`,
+            filename: `${downloadName}_classifier_distance_with_extensions_∆h`,
         },
     };
 
     const data2 = [traces2.P, traces2.D, traces2.F];
     Plotly.newPlot(proteinChart2El, data2, proteinChart2Layout, config2);
 
+   const traces4 = {
+        P: {
+            name: 'P labeled residue',
+            type: 'scatter',
+            mode: 'markers',
+            hoverinfo: 'x+y',
+            line: {
+                color: '#5075B0',
+            },
+            x: [],
+            y: [],
+        },
+        D: {
+            name: 'D labeled residue',
+            type: 'scatter',
+            mode: 'markers',
+            hoverinfo: 'x+y',
+            line: {
+                color: '#A92217',
+            },
+            x: [],
+            y: [],
+        },
+        F: {
+            name: 'F labeled residue',
+            type: 'scatter',
+            mode: 'markers',
+            hoverinfo: 'x+y',
+            line: {
+                color: '#000000',
+            },
+            x: [],
+            y: [],
+        },
+    };
+
+    protein.residues.forEach((x, index) => {
+        traces4.P.x.push(index + 1);
+        traces4.P.y.push(x.region_pi_q_csat == 'P' ? x.dist_norm_pi_q_csat : null);
+        traces4.D.x.push(index + 1);
+        traces4.D.y.push(x.region_pi_q_csat == 'D' ? x.dist_norm_pi_q_csat : null);
+        traces4.F.x.push(index + 1);
+        traces4.F.y.push(x.region_pi_q_csat == 'F' ? x.dist_norm_pi_q_csat : null);
+    });
+
+    const config4 = {
+        toImageButtonOptions: {
+            filename: `${downloadName}_classifier_distance_with_extensions_csat`,
+        },
+    };
+
+    const data4 = [traces4.P, traces4.D, traces4.F];
+    Plotly.newPlot(proteinChart4El, data4, proteinChart4Layout, config4);
+    
     const traceLegendSettings = {
         P: {
             ranked: false,
