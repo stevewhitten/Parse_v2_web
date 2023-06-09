@@ -32,6 +32,7 @@ function getResidues(input, windowSize) {
             region_pi_q: null,
             dist_norm: 0,
             dist_norm_pi_q: 0,
+            dist_norm_pi_q_csat: 0,
         });
     }
 
@@ -81,8 +82,10 @@ function getResidues(input, windowSize) {
             if (hydr >= 0.08280152) {
                 residues[middle_position].region = 'F';
                 residues[middle_position].region_pi_q = residues[middle_position].region;
+                residues[middle_position].region_pi_q_csat = residues[middle_position].region;
                 residues[middle_position].dist_norm = (hydr - 0.08280152) / (0.01679414 * 2.0);
                 residues[middle_position].dist_norm_pi_q = residues[middle_position].dist_norm;
+                residues[middle_position].dist_norm_pi_q_csat = residues[middle_position].dist_norm;
             } else {
                 var RY = count.R * count.Y / (count.R == count.Y ? 1 : Math.abs(count.R - count.Y));
                 var RF = count.R * count.F / (count.R == count.F ? 1 : Math.abs(count.R - count.F));
@@ -91,6 +94,7 @@ function getResidues(input, windowSize) {
                 var FY = count.F * count.Y / (count.F == count.Y ? 1 : Math.abs(count.F - count.Y));
 
                 var U_pi = 0.137 * (3.0 * RY + 2.0 * KY + 2.0 * RF + 1.0 * KF + 1.0 * FY);
+                var U_pi_csat = 0.28 * (3.0 * RY + 2.0 * KY + 2.0 * RF + 1.0 * KF + 1.0 * FY);
 
                 var scd = 0;
 
@@ -112,6 +116,7 @@ function getResidues(input, windowSize) {
                 var ncpr = net_charge / windowSize
 
                 var U_q = 8.4 * scd + 5.6 * ncpr;
+                var U_q_csat = -16.0 * scd + 33.0 * ncpr;
 
                 if (ppii == 1.0) {
                     ppii = 0.98;
@@ -147,18 +152,26 @@ function getResidues(input, windowSize) {
                 if (((nu_model - c2) / c1) <= helix) {
                     residues[middle_position].region = 'D';
                     residues[middle_position].region_pi_q = residues[middle_position].region;
+                    residues[middle_position].region_pi_q_csat = residues[middle_position].region;
                     residues[middle_position].dist_norm = Math.sqrt((helix - x) * (helix - x) + (nu_model - y) * (nu_model - y)) / id_dist;
                     residues[middle_position].dist_norm_pi_q = residues[middle_position].dist_norm;
+                    residues[middle_position].dist_norm_pi_q_csat = residues[middle_position].dist_norm;
 
                     if (residues[middle_position].dist_norm < U_pi + U_q) {
                         residues[middle_position].region_pi_q = 'P';
                         residues[middle_position].dist_norm_pi_q = U_pi + U_q - residues[middle_position].dist_norm;
                     }
+                    if (residues[middle_position].dist_norm < U_pi_csat + U_q_csat) {
+                        residues[middle_position].region_pi_q_csat = 'P';
+                        residues[middle_position].dist_norm_pi_q_csat = U_pi_csat + U_q_csat - residues[middle_position].dist_norm;
+                    }
                 } else {
                     residues[middle_position].region = 'P';
                     residues[middle_position].region_pi_q = residues[middle_position].region;
+                    residues[middle_position].region_pi_q_csat = residues[middle_position].region;
                     residues[middle_position].dist_norm = Math.sqrt((helix - x) * (helix - x) + (nu_model - y) * (nu_model - y)) / ps_dist;
                     residues[middle_position].dist_norm_pi_q = U_pi + U_q + residues[middle_position].dist_norm;
+                    residues[middle_position].dist_norm_pi_q_csat = U_pi_csat + U_q_csat + residues[middle_position].dist_norm;
                 }
             }
         }
@@ -167,13 +180,17 @@ function getResidues(input, windowSize) {
     for (let i = 0; i < Math.trunc(windowSize / 2); i++) {
         residues[i].region = residues[Math.trunc(windowSize / 2)].region;
         residues[i].region_pi_q = residues[Math.trunc(windowSize / 2)].region_pi_q;
+        residues[i].region_pi_q_csat = residues[Math.trunc(windowSize / 2)].region_pi_q_csat;
         residues[i].dist_norm = residues[Math.trunc(windowSize / 2)].dist_norm;
         residues[i].dist_norm_pi_q = residues[Math.trunc(windowSize / 2)].dist_norm_pi_q;
+        residues[i].dist_norm_pi_q_csat = residues[Math.trunc(windowSize / 2)].dist_norm_pi_q_csat;
 
         residues[input.length - i - 1].region = residues[input.length - Math.trunc(windowSize / 2) - 1].region;
         residues[input.length - i - 1].region_pi_q = residues[input.length - Math.trunc(windowSize / 2) - 1].region_pi_q;
+        residues[input.length - i - 1].region_pi_q_csat = residues[input.length - Math.trunc(windowSize / 2) - 1].region_pi_q_csat;
         residues[input.length - i - 1].dist_norm = residues[input.length - Math.trunc(windowSize / 2) - 1].dist_norm;
         residues[input.length - i - 1].dist_norm_pi_q = residues[input.length - Math.trunc(windowSize / 2) - 1].dist_norm_pi_q;
+        residues[input.length - i - 1].dist_norm_pi_q_csat = residues[input.length - Math.trunc(windowSize / 2) - 1].dist_norm_pi_q_csat;
     }
 
     return residues;
