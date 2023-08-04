@@ -518,6 +518,7 @@ function submit() {
 function clear() {
     console.log('clear');
     inputSequenceEl.value = '';
+    downloadNameEl.value = '';
 }
 function reset() {
     clear();
