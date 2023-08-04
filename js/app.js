@@ -516,7 +516,6 @@ function submit() {
     displayProteinResults();
 }
 function clear() {
-    console.log('clear');
     inputSequenceEl.value = '';
     downloadNameEl.value = '';
 }
