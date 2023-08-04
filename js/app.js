@@ -521,14 +521,12 @@ function clear() {
     downloadNameEl.value = '';
 }
 function reset() {
-    clear();
-    resetSummary();
-    resetPlots();
-    resetTables();
-
+    location.reload();
 }
 
-reset();
+resetSummary();
+resetPlots();
+resetTables();
 
 submitEl.addEventListener('click', submit);
 clearEl.addEventListener('click', clear);
